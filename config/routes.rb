@@ -4,4 +4,7 @@ Rails.application.routes.draw do
       resources :subscribers, only: [:create]
     end
   end
+
+  get '/api/gallery/:folder', to: 'gallery#show'
+
 end
