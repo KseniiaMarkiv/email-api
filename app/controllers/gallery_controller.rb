@@ -2,18 +2,18 @@ class GalleryController < ApplicationController
   def show
     folder = params[:folder].capitalize # e.g., Showers, Mirrors
     resources = Cloudinary::Api.resources(
-      type: 'upload',
+      type: "upload",
       prefix: "#{folder}/",
       max_results: 100
     )
-    
-    render json: resources['resources'].map do |img|
+
+    render json: resources["resources"].map do |img|
       {
-        url: img['secure_url'],
-        public_id: img['public_id'],
-        format: img['format'],
-        width: img['width'],
-        height: img['height']
+        url: img["secure_url"],
+        public_id: img["public_id"],
+        format: img["format"],
+        width: img["width"],
+        height: img["height"]
       }
     end
   rescue => e

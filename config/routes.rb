@@ -5,6 +5,5 @@ Rails.application.routes.draw do
     end
   end
 
-  get '/api/gallery/:folder', to: 'gallery#show'
-
+  get "/api/gallery/:folder", to: "gallery#show"
 end
