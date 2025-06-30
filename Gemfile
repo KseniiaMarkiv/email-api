@@ -54,4 +54,3 @@ gem "cloudinary"
 
 gem "redis", "~> 5.4"
 
-gem "redis-rails"
