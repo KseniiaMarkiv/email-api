@@ -19,9 +19,6 @@ class GalleryController < ApplicationController
         limit: 100
       })
 
-  Rails.logger.debug "ImageKit list_files result: #{list.inspect}"
-
-
       list[:response] || []
     end
 
@@ -46,5 +43,4 @@ class GalleryController < ApplicationController
       name: res["name"]
     }
   end
-
 end
