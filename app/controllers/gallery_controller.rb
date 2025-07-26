@@ -4,7 +4,9 @@ class GalleryController < ApplicationController
   require "imagekitio"
 
   def show
-    folder    = params[:folder]
+    folder_key = params[:folder].to_s.downcase  # normalize the incoming folder param
+    folder     = folder_key.capitalize
+
     cache_key = "imagekit_gallery_data_#{folder}"
 
     resources = Rails.cache.fetch(cache_key, expires_in: 1.hour) do
@@ -15,7 +17,7 @@ class GalleryController < ApplicationController
       )
 
       list = imagekit.list_files(
-        folder: "/#{folder}",
+        path: "/#{folder}/",
         sort:   "ASC_CREATED",
         limit:  100
       )
