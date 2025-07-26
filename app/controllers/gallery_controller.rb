@@ -25,7 +25,7 @@ class GalleryController < ApplicationController
 
     expires_in 1.year, public: true
     render json: resources.map { |res| format_resource(res) }
-  rescue => e
+  rescue StandardError => e
     Rails.logger.error "GalleryController#show error: #{e.message}"
     render json: { error: "An internal server error occurred." }, status: 500
   end
