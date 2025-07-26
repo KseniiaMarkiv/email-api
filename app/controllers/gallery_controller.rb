@@ -1,41 +1,50 @@
 class GalleryController < ApplicationController
-  def show
-    folder = params[:folder].capitalize
+  require "imagekitio"
 
-    cache_key = "cloudinary_gallery_data_#{folder.underscore}"
+  def show
+    folder = params[:folder]
+
+    cache_key = "imagekit_gallery_data_#{folder}"
 
     resources = Rails.cache.fetch(cache_key, expires_in: 1.hour) do
-      images = Cloudinary::Api.resources(
-        type: "upload",
-        resource_type: "image",
-        prefix: "#{folder}/",
-        max_results: 500
-      )["resources"] || []
+      imagekit = ImageKitIo::Client.new(
+        ENV["IMAGEKIT_PRIVATE_KEY"],
+        ENV["IMAGEKIT_PUBLIC_KEY"],
+        ENV["IMAGEKIT_URL_ENDPOINT"]
+      )
 
-      videos = Cloudinary::Api.resources(
-        type: "upload",
-        resource_type: "video",
-        prefix: "#{folder}/",
-        max_results: 500
-      )["resources"] || []
+      list = imagekit.list_files({
+        folder: "/#{folder}",
+        sort: "ASC_CREATED",
+        limit: 100
+      })
 
-      images + videos
+  Rails.logger.debug "ImageKit list_files result: #{list.inspect}"
+
+
+      list[:response] || []
     end
 
     expires_in 1.year, public: true
 
-    render json: (resources || []).map do |res|
-      {
-        url: res["secure_url"],
-        public_id: res["public_id"],
-        format: res["format"],
-        width: res["width"],
-        height: res["height"],
-        resource_type: res["resource_type"]
-      }
-    end
+    render json: resources.map { |res| format_resource(res) }
   rescue => e
     Rails.logger.error "GalleryController#show error: #{e.message}"
     render json: { error: "An internal server error occurred." }, status: 500
   end
+
+  private
+
+  def format_resource(res)
+    {
+      url: res["url"],
+      file_id: res["fileId"],
+      file_type: res["fileType"],
+      format: res["fileType"],
+      width: res["width"],
+      height: res["height"],
+      name: res["name"]
+    }
+  end
+
 end

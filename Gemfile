@@ -54,3 +54,7 @@ gem "cloudinary"
 
 gem "redis", "~> 5.4"
 gem "hiredis"
+
+gem "imagekitio"
+gem "rest-client"
+gem "ffi"
