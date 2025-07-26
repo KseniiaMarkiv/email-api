@@ -23,7 +23,6 @@ jobs:
         run: bin/brakeman --no-pager
 
   lint:
-    if: false
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
